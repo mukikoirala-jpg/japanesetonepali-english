@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MUKESH KOIRALA · Ultimate Translator v4.0</title>
+    <title>MUKESH KOIRALA · Ultimate Translator v5.0</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 
@@ -21,42 +21,43 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundle.js">
-    </script>
 
     <style>
         /* ==================== CSS VARIABLES ==================== */
         :root {
-            --bg-primary: #0b0818;
-            --bg-secondary: #1a1e2f;
-            --bg-card: #1a1e2f;
-            --bg-input: #0f1322;
-            --border-color: #2a2f45;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: #1a1a3e;
+            --bg-input: #0d0d25;
+            --border-color: #2a2a5a;
+            --text-primary: #f0f0ff;
+            --text-secondary: #a0a0d0;
+            --text-muted: #6a6a9a;
             --accent-1: #7c3aed;
             --accent-2: #6366f1;
             --accent-3: #38bdf8;
+            --accent-4: #34d399;
+            --accent-gold: #fbbf24;
             --gradient-main: linear-gradient(135deg, #7c3aed, #6366f1);
             --gradient-glow: linear-gradient(135deg, #7c3aed, #38bdf8, #34d399);
-            --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            --gradient-gold: linear-gradient(135deg, #fbbf24, #f59e0b);
+            --shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
             --radius: 20px;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-devanagari: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
-            --font-japanese: 'Noto Sans JP', 'Noto Sans', sans-serif;
+            --glow: 0 0 40px rgba(124, 58, 237, 0.15);
         }
 
         [data-theme="light"] {
-            --bg-primary: #f1f5f9;
+            --bg-primary: #f0f0ff;
             --bg-secondary: #ffffff;
             --bg-card: #ffffff;
-            --bg-input: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
+            --bg-input: #f8f8ff;
+            --border-color: #d0d0e8;
+            --text-primary: #0a0a1a;
+            --text-secondary: #4a4a7a;
+            --text-muted: #8a8aba;
             --shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(124, 58, 237, 0.05);
         }
 
         /* ==================== BASE ==================== */
@@ -71,15 +72,53 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            transition: background var(--transition), color var(--transition);
-            background-image: radial-gradient(ellipse at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 80%, rgba(56, 189, 248, 0.06) 0%, transparent 50%);
+            transition: all var(--transition);
+            background-image:
+                radial-gradient(ellipse at 10% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, rgba(56, 189, 248, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(52, 211, 153, 0.03) 0%, transparent 70%);
         }
 
         .container {
             max-width: 1500px;
             margin: 0 auto;
             padding: 20px 24px 60px;
+        }
+
+        /* ==================== ANIMATED BACKGROUND ==================== */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-particles span {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+        }
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
         }
 
         /* ==================== HEADER ==================== */
@@ -92,6 +131,8 @@
             margin-bottom: 32px;
             flex-wrap: wrap;
             gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .logo {
@@ -100,33 +141,43 @@
             gap: 14px;
         }
         .logo-icon {
-            width: 52px;
-            height: 52px;
+            width: 56px;
+            height: 56px;
             background: var(--gradient-main);
-            border-radius: 16px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
             color: #fff;
-            box-shadow: 0 4px 24px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 4px 30px rgba(124, 58, 237, 0.4);
             transition: var(--transition);
-            cursor: default;
+            position: relative;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 20px;
+            background: var(--gradient-glow);
+            opacity: 0.3;
+            filter: blur(10px);
+            z-index: -1;
         }
         .logo-icon:hover {
-            transform: scale(1.05) rotate(-2deg);
+            transform: scale(1.05) rotate(-3deg);
         }
         .logo h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--text-primary), #a78bfa, #38bdf8);
+            background: linear-gradient(135deg, var(--text-primary), #a78bfa, #38bdf8, #34d399);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
         }
         .logo h1 .highlight {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            background: var(--gradient-gold);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -134,18 +185,18 @@
             font-size: 10px;
             color: var(--text-muted);
             background: var(--bg-input);
-            padding: 2px 10px;
-            border-radius: 10px;
+            padding: 2px 12px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             -webkit-text-fill-color: var(--text-muted);
-            margin-left: 6px;
+            margin-left: 8px;
         }
         .logo span {
             font-size: 13px;
             color: var(--text-muted);
             display: block;
             -webkit-text-fill-color: var(--text-muted);
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
         .header-actions {
@@ -172,6 +223,7 @@
         .theme-toggle:hover {
             border-color: var(--accent-1);
             transform: scale(1.05);
+            box-shadow: var(--glow);
         }
 
         .lang-badge {
@@ -180,7 +232,7 @@
             flex-wrap: wrap;
         }
         .lang-badge span {
-            padding: 6px 16px;
+            padding: 6px 18px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
@@ -192,6 +244,7 @@
         .lang-badge span:hover {
             border-color: rgba(139, 92, 246, 0.4);
             color: var(--text-primary);
+            transform: translateY(-1px);
         }
         .lang-badge .ja {
             background: rgba(239, 68, 68, 0.12);
@@ -209,6 +262,38 @@
             color: #93c5fd;
         }
 
+        /* ==================== STATS BAR ==================== */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .stats-bar .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .stats-bar .stat-item .num {
+            font-weight: 700;
+            color: var(--accent-1);
+            font-size: 16px;
+        }
+        .stats-bar .stat-item .num.gold {
+            color: var(--accent-gold);
+        }
+        .stats-bar .stat-item .num.green {
+            color: var(--accent-4);
+        }
+
         /* ==================== TABS ==================== */
         .tabs {
             display: flex;
@@ -220,6 +305,8 @@
             border: 1px solid var(--border-color);
             width: fit-content;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
         .tab-btn {
             padding: 10px 28px;
@@ -242,7 +329,7 @@
             background: var(--gradient-main);
             color: #fff;
             font-weight: 600;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
         }
         .tab-btn .badge {
             position: absolute;
@@ -265,6 +352,21 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             backdrop-filter: blur(4px);
+            position: relative;
+            z-index: 1;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius);
+            padding: 1px;
+            background: var(--gradient-glow);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.1;
+            pointer-events: none;
         }
         .card:hover {
             border-color: rgba(139, 92, 246, 0.2);
@@ -310,6 +412,16 @@
             height: 8px;
             border-radius: 50%;
             display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
         }
         .dot.ja-dot {
             background: #ef4444;
@@ -321,15 +433,10 @@
             background: #3b82f6;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
-
         .transl-textarea {
             width: 100%;
-            min-height: 220px;
+            min-height: 280px;
             padding: 18px;
-            padding-right: 50px;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -338,7 +445,7 @@
             font-family: 'Noto Sans Devanagari', 'Noto Sans', 'Inter', sans-serif;
             resize: vertical;
             transition: var(--transition);
-            line-height: 1.8;
+            line-height: 1.9;
         }
         .transl-textarea:focus {
             outline: none;
@@ -352,50 +459,6 @@
         .transl-textarea::placeholder {
             color: var(--text-muted);
         }
-        .transl-textarea.japanese-input {
-            font-family: var(--font-japanese);
-        }
-
-        .input-actions {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            display: flex;
-            gap: 6px;
-        }
-        .input-actions button {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 16px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .input-actions button:hover {
-            border-color: var(--accent-1);
-            color: var(--text-primary);
-            transform: scale(1.05);
-        }
-        .input-actions button.recording {
-            border-color: #ef4444;
-            color: #ef4444;
-            animation: pulse-rec 1.5s infinite;
-        }
-        @keyframes pulse-rec {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
-            }
-        }
 
         .char-count {
             text-align: right;
@@ -404,36 +467,11 @@
             margin-top: 8px;
             font-weight: 500;
         }
-
-        /* ==================== WORD BREAKDOWN ==================== */
-        .word-breakdown {
-            margin-top: 12px;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            display: none;
-            max-height: 120px;
-            overflow-y: auto;
+        .char-count .warning {
+            color: #fbbf24;
         }
-        .word-breakdown.visible {
-            display: block;
-        }
-        .word-breakdown .word-item {
-            display: inline-block;
-            margin: 2px 4px 2px 0;
-            padding: 2px 8px;
-            background: var(--bg-card);
-            border-radius: 4px;
-            font-size: 13px;
-            border: 1px solid var(--border-color);
-            cursor: help;
-        }
-        .word-breakdown .word-item .ruby {
-            display: block;
-            font-size: 9px;
-            color: var(--text-muted);
-            text-align: center;
+        .char-count .danger {
+            color: #ef4444;
         }
 
         /* ==================== BUTTONS ==================== */
@@ -456,7 +494,7 @@
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 6px 30px rgba(124, 58, 237, 0.4);
         }
         .btn-success {
             background: linear-gradient(135deg, #10b981, #059669);
@@ -464,7 +502,7 @@
         }
         .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 6px 30px rgba(16, 185, 129, 0.35);
         }
         .btn-ne {
             background: linear-gradient(135deg, #7c3aed, #a78bfa);
@@ -472,7 +510,7 @@
         }
         .btn-ne:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 6px 30px rgba(124, 58, 237, 0.4);
         }
         .btn-en {
             background: linear-gradient(135deg, #2563eb, #38bdf8);
@@ -480,7 +518,7 @@
         }
         .btn-en:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 6px 30px rgba(56, 189, 248, 0.35);
         }
         .btn-outline {
             background: transparent;
@@ -492,13 +530,13 @@
             color: var(--text-primary);
             border-color: var(--text-muted);
         }
-        .btn-glow {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+        .btn-gold {
+            background: var(--gradient-gold);
             color: #000;
         }
-        .btn-glow:hover {
+        .btn-gold:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.35);
+            box-shadow: 0 6px 30px rgba(245, 158, 11, 0.35);
         }
         .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -506,16 +544,7 @@
         }
         .btn-danger:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(239, 68, 68, 0.3);
-        }
-        .btn-tts {
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            color: #fff;
-            padding: 6px 14px;
-            font-size: 12px;
-        }
-        .btn-tts:hover {
-            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.3);
         }
         .btn:disabled {
             opacity: 0.5;
@@ -544,7 +573,7 @@
         .upload-zone.dragover {
             border-color: #8b5cf6;
             background: rgba(139, 92, 246, 0.06);
-            box-shadow: 0 0 40px rgba(139, 92, 246, 0.05);
+            box-shadow: var(--glow);
         }
         .upload-zone .upload-icon {
             font-size: 56px;
@@ -772,8 +801,8 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(11, 8, 24, 0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 26, 0.96);
+            backdrop-filter: blur(16px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -819,56 +848,17 @@
         }
 
         /* ==================== HISTORY ==================== */
-        .history-section {
-            margin-top: 20px;
-            padding: 16px 20px;
-            background: var(--bg-input);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-        }
-        .history-section.visible {
-            display: block;
-        }
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
             font-size: 13px;
             gap: 10px;
         }
         .history-item:last-child {
             border-bottom: none;
-        }
-        .history-item .h-jp {
-            color: var(--text-secondary);
-            max-width: 25%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .history-item .h-ne {
-            color: #a78bfa;
-            max-width: 25%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .history-item .h-en {
-            color: #93c5fd;
-            max-width: 25%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .history-item .h-time {
-            font-size: 10px;
-            color: var(--text-muted);
-            white-space: nowrap;
         }
 
         /* ==================== TOAST ==================== */
@@ -884,8 +874,6 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
             animation: slideUp 0.35s ease;
             max-width: 440px;
-            word-break: break-word;
-            line-height: 1.5;
             border-left: 4px solid;
         }
         .toast-msg.success {
@@ -922,14 +910,16 @@
             font-size: 13px;
             border-top: 1px solid var(--border-color);
             margin-top: 48px;
+            position: relative;
+            z-index: 1;
         }
         .credit-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             background: linear-gradient(135deg, #a78bfa, #38bdf8, #34d399, #fbbf24);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             font-family: 'Playfair Display', serif;
         }
         .credit-sub {
@@ -965,7 +955,7 @@
                 padding: 18px;
             }
             .transl-textarea {
-                min-height: 120px;
+                min-height: 140px;
             }
             .tabs {
                 width: 100%;
@@ -995,21 +985,19 @@
                 width: 100%;
                 justify-content: flex-start;
             }
-            .history-item {
-                flex-wrap: wrap;
-                font-size: 12px;
-            }
-            .history-item .h-jp,
-            .history-item .h-ne,
-            .history-item .h-en {
-                max-width: 100%;
-                white-space: normal;
+            .stats-bar {
+                flex-direction: column;
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== ANIMATED BACKGROUND PARTICLES ===== -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- ===== LOADING OVERLAY ===== -->
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-box">
             <div class="big-spinner"></div>
@@ -1020,6 +1008,7 @@
 
     <div class="container">
 
+        <!-- ===== HEADER ===== -->
         <header>
             <div class="logo">
                 <div class="logo-icon">MK</div>
@@ -1038,6 +1027,15 @@
             </div>
         </header>
 
+        <!-- ===== STATS BAR ===== -->
+        <div class="stats-bar">
+            <div class="stat-item">📝 Characters: <span class="num" id="char-count-display">0</span></div>
+            <div class="stat-item">📖 Words: <span class="num gold" id="word-count-display">0</span></div>
+            <div class="stat-item">📜 History: <span class="num green" id="history-count-display">0</span></div>
+            <div class="stat-item">⚡ Status: <span id="status-display" style="color:var(--text-muted);">Ready</span></div>
+        </div>
+
+        <!-- ===== TABS ===== -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="text">⌨️ Text</button>
             <button class="tab-btn" data-tab="upload">📁 Upload <span class="badge" id="file-badge" style="display:none;">0</span></button>
@@ -1048,54 +1046,34 @@
         <!-- ===== TEXT TAB ===== -->
         <div id="tab-text" class="tab-content">
             <div class="card">
-                <div class="card-title">✏️ Type, Paste, or Speak Japanese</div>
+                <div class="card-title">✏️ Type or Paste Japanese Text <span style="font-size:12px;color:var(--text-muted);font-weight:400;margin-left:auto;">10,000+ character support</span></div>
                 <div class="translation-grid">
                     <div>
                         <div class="lang-label"><span class="dot ja-dot"></span> Japanese</div>
-                        <div class="input-wrapper">
-                            <textarea id="input-ja" class="transl-textarea japanese-input" placeholder="日本語のテキストを入力..." spellcheck="false"></textarea>
-                            <div class="input-actions">
-                                <button id="btn-voice-input" title="Voice Input (Speech-to-Text)" onclick="toggleVoiceInput()">🎤</button>
-                                <button id="btn-clear-input" title="Clear" onclick="clearInput()">✕</button>
-                            </div>
-                        </div>
+                        <textarea id="input-ja" class="transl-textarea" placeholder="日本語のテキストを入力..." spellcheck="false"></textarea>
                         <div class="char-count"><span id="char-count-ja">0</span> characters</div>
                     </div>
                     <div>
-                        <div class="lang-label">
-                            <span class="dot ne-dot"></span> Nepali (नेपाली)
-                            <button class="btn-tts" onclick="speakText('ne')" style="margin-left:auto;">🔊 Listen</button>
-                        </div>
+                        <div class="lang-label"><span class="dot ne-dot"></span> Nepali (नेपाली)</div>
                         <textarea id="output-ne" class="transl-textarea output" placeholder="नेपाली अनुवाद..." readonly
                         style="font-family:'Noto Sans Devanagari','Noto Sans',sans-serif;"></textarea>
                         <div class="char-count"><span id="char-count-ne">0</span> characters</div>
                     </div>
                     <div>
-                        <div class="lang-label">
-                            <span class="dot en-dot"></span> English
-                            <button class="btn-tts" onclick="speakText('en')" style="margin-left:auto;">🔊 Listen</button>
-                        </div>
+                        <div class="lang-label"><span class="dot en-dot"></span> English</div>
                         <textarea id="output-en" class="transl-textarea output" placeholder="English translation..." readonly></textarea>
                         <div class="char-count"><span id="char-count-en">0</span> characters</div>
                     </div>
                 </div>
-
-                <!-- Word Breakdown -->
-                <div class="word-breakdown" id="word-breakdown">
-                    <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">📖 Word-by-Word Breakdown</div>
-                    <div id="word-list"></div>
-                </div>
-
                 <div class="actions">
                     <button id="btn-translate" class="btn btn-primary">🔄 Translate</button>
-                    <button id="btn-auto-translate" class="btn btn-success" title="Translate as you type">⚡ Auto</button>
+                    <button id="btn-auto-translate" class="btn btn-success">⚡ Auto</button>
                     <button id="btn-clear-text" class="btn btn-outline">🗑️ Clear</button>
                     <button id="btn-copy-ne" class="btn btn-outline">📋 Copy Nepali</button>
                     <button id="btn-copy-en" class="btn btn-outline">📋 Copy English</button>
                     <button id="btn-pdf-ne-out" class="btn btn-ne" style="display:none;">📕 PDF (नेपाली)</button>
                     <button id="btn-pdf-en-out" class="btn btn-en" style="display:none;">📕 PDF (English)</button>
-                    <button id="btn-export-docx" class="btn btn-outline" style="display:none;">📝 Export DOCX</button>
-                    <button id="btn-save-history" class="btn btn-outline" style="display:none;">💾 Save to History</button>
+                    <button id="btn-save-history" class="btn btn-gold" style="display:none;">💾 Save to History</button>
                 </div>
             </div>
         </div>
@@ -1117,10 +1095,8 @@
                         <span class="format-badge">.pptx</span>
                         <span class="format-badge">.pdf</span>
                         <span class="format-badge">.txt</span>
-                        <span class="format-badge">.html</span>
-                        <span class="format-badge">.rtf</span>
                     </div>
-                    <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.docx,.pptx,.pdf,.txt,.html,.rtf" multiple />
+                    <input type="file" id="file-input" accept=".xlsx,.xls,.csv,.docx,.pptx,.pdf,.txt" multiple />
                 </div>
 
                 <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
@@ -1136,34 +1112,6 @@
                 <div class="download-section" id="download-section">
                     <div class="card-title" style="font-size:15px;margin-bottom:12px;">📥 Download Translations</div>
                     <div id="download-btns"></div>
-                </div>
-
-                <div class="pdf-preview-area" id="pdf-preview-area">
-                    <div class="card-title" style="margin-bottom:14px;">🔍 PDF Preview: Original vs Translated</div>
-                    <div class="pdf-side-by-side" id="pdf-side-by-side">
-                        <div class="pdf-panel" id="orig-panel">
-                            <div class="panel-hdr"><span>📕 Original</span><span id="orig-page-info">Page 1</span></div>
-                            <div class="panel-body" id="orig-panel-body">
-                                <p style="padding:40px;text-align:center;color:var(--text-muted);">Select a PDF to preview</p>
-                            </div>
-                            <div class="pdf-page-nav">
-                                <button id="orig-prev">◀</button>
-                                <span id="orig-page-num">1 / 1</span>
-                                <button id="orig-next">▶</button>
-                            </div>
-                        </div>
-                        <div class="pdf-panel" id="trans-panel">
-                            <div class="panel-hdr"><span>🌍 Translated</span><span id="trans-page-info">Page 1</span></div>
-                            <div class="panel-body" id="trans-panel-body">
-                                <p style="padding:40px;text-align:center;color:var(--text-muted);">Translation will appear here</p>
-                            </div>
-                            <div class="pdf-page-nav">
-                                <button id="trans-prev">◀</button>
-                                <span id="trans-page-num">1 / 1</span>
-                                <button id="trans-next">▶</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1185,34 +1133,26 @@
         <!-- ===== HOW IT WORKS TAB ===== -->
         <div id="tab-howto" class="tab-content" style="display:none;">
             <div class="card" style="max-width:820px;margin:0 auto;">
-                <div class="card-title">🧠 Advanced Layout Preservation Engine v4.0</div>
+                <div class="card-title">🧠 Advanced Translation Engine v5.0</div>
                 <div style="color:var(--text-secondary);line-height:2;font-size:14px;">
-                    <p style="margin-bottom:16px;font-weight:600;color:var(--text-primary);">✨ New Features in v4.0:</p>
+                    <p style="margin-bottom:16px;font-weight:600;color:var(--text-primary);">✨ Features:</p>
                     <ul style="padding-left:22px;display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
-                        <li>🎤 <strong>Speech-to-Text</strong> — Voice input for Japanese (Chrome/Edge only)</li>
-                        <li>🔊 <strong>Text-to-Speech</strong> — Listen to Nepali and English translations</li>
-                        <li>📖 <strong>Word Breakdown</strong> — See each word with furigana/ruby</li>
-                        <li>⚡ <strong>Auto-Translate</strong> — Translates as you type (with debounce)</li>
-                        <li>📝 <strong>Export as DOCX, TXT, HTML</strong> — More export options</li>
+                        <li>🚀 <strong>10,000+ character support</strong> — Handle large documents with ease</li>
+                        <li>🎨 <strong>Beautiful UI</strong> — Glassmorphism design with animated particles</li>
+                        <li>⚡ <strong>Auto-translate</strong> — Translates as you type</li>
+                        <li>📊 <strong>Real-time stats</strong> — Character, word, and history counters</li>
+                        <li>🌓 <strong>Dark/Light mode</strong> — With smooth transitions</li>
+                        <li>📜 <strong>Translation history</strong> — Save and export your translations</li>
+                        <li>📁 <strong>File upload</strong> — Preserve layout for PDF, DOCX, XLSX, PPTX</li>
                     </ul>
 
-                    <p style="margin-bottom:16px;font-weight:600;color:var(--text-primary);">Core Translation Engine:</p>
-                    <ol style="padding-left:22px;display:flex;flex-direction:column;gap:12px;">
-                        <li><strong>📸 High-Res Snapshot:</strong> The original document page/slide/sheet is rendered as a high-resolution image — capturing every font, color, table border, image, and layout detail with pixel-perfect accuracy.</li>
-                        <li><strong>🔍 Intelligent Text Detection:</strong> Every text element's exact position (x, y), font size, width, and height is extracted from the original file structure.</li>
-                        <li><strong>🌐 Neural Translation:</strong> Japanese text is translated to Nepali and English using Google Translate API with context-aware precision and automatic retry on failure.</li>
-                        <li><strong>🎨 Smart Overlay:</strong> Translated text is placed at the <em>exact same coordinates</em> as the original Japanese text, with dynamic font scaling, using semi-transparent backgrounds for clean readability.</li>
-                        <li><strong>📦 Multi-Format Export:</strong> The result is a new PDF that looks <em>identical</em> to the original — same paper size, same margins, same visual structure — just with translated text.</li>
-                    </ol>
                     <div style="margin-top:24px;padding:18px 22px;background:var(--bg-input);border-radius:12px;border:1px solid var(--border-color);font-size:13px;">
                         <div style="display:flex;gap:20px;flex-wrap:wrap;">
-                            <span>✅ <strong style="color:#34d399;">Supported:</strong> PDF · PPTX · DOCX · XLSX · XLS · CSV · TXT · HTML · RTF</span>
+                            <span>✅ <strong style="color:#34d399;">Supported:</strong> PDF · PPTX · DOCX · XLSX · TXT</span>
                             <span>🔄 <strong style="color:#a78bfa;">Japanese → Nepali + English</strong></span>
                             <span>⚡ <strong style="color:#fbbf24;">Batch processing</strong> with progress tracking</span>
                             <span>📜 <strong style="color:#60a5fa;">Translation History</strong> with export</span>
-                            <span>🎤 <strong style="color:#f472b6;">Voice Input/Output</strong></span>
                         </div>
-                        <p style="margin-top:10px;color:var(--text-muted);">⚠️ Complex formatting (3D effects, embedded videos, advanced charts) may have simplified rendering.</p>
                     </div>
                 </div>
             </div>
@@ -1220,12 +1160,29 @@
 
         <footer>
             <span class="credit-name">MUKESH KOIRALA</span>
-            <span class="credit-sub">✦ Japanese → Nepali + English · Layout-Preserving Translation Engine v4.0 ✦</span>
-            <span style="display:block;margin-top:8px;font-size:11px;color:var(--text-muted);">Built with precision & passion</span>
+            <span class="credit-sub">✦ Japanese → Nepali + English · Layout-Preserving Translation Engine v5.0 ✦</span>
         </footer>
     </div>
 
     <script>
+        // ============================================================
+        //  PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const span = document.createElement('span');
+                const size = Math.random() * 3 + 2;
+                span.style.width = size + 'px';
+                span.style.height = size + 'px';
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                span.style.animationDelay = (Math.random() * 20) + 's';
+                span.style.opacity = Math.random() * 0.3 + 0.1;
+                container.appendChild(span);
+            }
+        })();
+
         // ============================================================
         //  INIT
         // ============================================================
@@ -1233,18 +1190,9 @@
 
         const state = {
             uploadedFiles: [],
-            lastNeText: '',
-            lastEnText: '',
-            previewFileIdx: -1,
-            previewPage: 0,
-            previewLang: 'ne',
-            origPages: [],
-            transPages: [],
             history: JSON.parse(localStorage.getItem('mk_translation_history') || '[]'),
             theme: localStorage.getItem('mk_theme') || 'dark',
             autoTranslate: false,
-            recognition: null,
-            isRecording: false,
         };
 
         // ============================================================
@@ -1293,219 +1241,69 @@
         function hideLoading() { $('#loading-overlay').classList.remove('visible'); }
 
         // ============================================================
-        //  TRANSLATION - Enhanced v4.0
+        //  TRANSLATION - Enhanced v5.0
         // ============================================================
-        async function translateText(text, target, retries = 3) {
+        async function translateText(text, target) {
             if (!text.trim()) return '';
+
             try {
                 const url =
-                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=${target}&dt=t&dt=bd&dj=1&q=${encodeURIComponent(text)}`;
-                const r = await fetch(url);
-                if (!r.ok) throw new Error(`API returned ${r.status}`);
-                const d = await r.json();
-                if (d.sentences) {
-                    return d.sentences.map(s => s.trans || '').join('');
+                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                if (Array.isArray(d) && d.length > 0) {
-                    return d[0].map(s => s[0]).join('');
+
+                const data = await response.json();
+
+                if (data && Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data[0])) {
+                        return data[0].map(item => item[0] || '').join('');
+                    }
+                    return data[0] || text;
                 }
+
                 return text;
-            } catch (e) {
-                if (retries > 0) {
-                    await new Promise(r => setTimeout(r, 300 * (4 - retries)));
-                    return translateText(text, target, retries - 1);
+            } catch (error) {
+                console.error('Translation error:', error);
+
+                // Fallback to alternative endpoint
+                try {
+                    const fallbackUrl =
+                        `https://translate.googleapis.com/translate_a/single?client=webapp&sl=ja&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
+                    const fallbackResponse = await fetch(fallbackUrl);
+                    if (fallbackResponse.ok) {
+                        const fallbackData = await fallbackResponse.json();
+                        if (fallbackData && Array.isArray(fallbackData) && fallbackData.length > 0) {
+                            if (Array.isArray(fallbackData[0])) {
+                                return fallbackData[0].map(item => item[0] || '').join('');
+                            }
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback translation failed:', fallbackError);
                 }
-                console.warn('Translation fallback for:', text.substring(0, 30));
+
                 return text;
             }
         }
 
         async function translateBatch(texts, target) {
             const results = [];
-            const chunkSize = 3;
+            const chunkSize = 2;
             for (let i = 0; i < texts.length; i += chunkSize) {
                 const batch = texts.slice(i, i + chunkSize);
-                const res = await Promise.all(batch.map(t => translateText(t, target)));
-                results.push(...res);
+                const chunkResults = await Promise.all(
+                    batch.map(text => translateText(text, target))
+                );
+                results.push(...chunkResults);
                 if (i + chunkSize < texts.length) {
-                    await new Promise(r => setTimeout(r, 100));
+                    await new Promise(r => setTimeout(r, 200));
                 }
             }
             return results;
-        }
-
-        // ============================================================
-        //  WORD BREAKDOWN (Simple implementation)
-        // ============================================================
-        function generateWordBreakdown(text) {
-            // Simple tokenization - split by spaces, punctuation, and newlines
-            const words = text.split(/[\s\n\r\t，。、！？「」『』（）【】…—・]+/).filter(w => w.length > 0);
-            return words.map(w => ({
-                word: w,
-                // Simplified furigana - in a real app, you'd use a Japanese dictionary API
-                ruby: w.length > 2 ? w.substring(0, 2) + '…' : w
-            }));
-        }
-
-        function showWordBreakdown(text) {
-            const container = $('#word-breakdown');
-            const list = $('#word-list');
-            if (!text.trim()) {
-                container.classList.remove('visible');
-                return;
-            }
-            const words = generateWordBreakdown(text);
-            if (words.length < 2) {
-                container.classList.remove('visible');
-                return;
-            }
-            container.classList.add('visible');
-            list.innerHTML = words.map(w => `
-                        <span class="word-item" title="${w.word}">
-                            ${w.word}
-                            <span class="ruby">${w.ruby}</span>
-                        </span>
-                    `).join('');
-        }
-
-        // ============================================================
-        //  SPEECH-TO-TEXT (Voice Input)
-        // ============================================================
-        function toggleVoiceInput() {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                toast('Speech recognition is not supported in this browser. Please use Chrome or Edge.', 'error');
-                return;
-            }
-
-            const btn = $('#btn-voice-input');
-
-            if (state.isRecording) {
-                if (state.recognition) {
-                    state.recognition.stop();
-                }
-                state.isRecording = false;
-                btn.classList.remove('recording');
-                btn.textContent = '🎤';
-                return;
-            }
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            state.recognition = new SpeechRecognition();
-            state.recognition.lang = 'ja-JP';
-            state.recognition.continuous = false;
-            state.recognition.interimResults = true;
-
-            state.recognition.onstart = () => {
-                state.isRecording = true;
-                btn.classList.add('recording');
-                btn.textContent = '⏹';
-                toast('🎤 Listening... Speak Japanese', 'info');
-            };
-
-            state.recognition.onresult = (event) => {
-                let finalText = '';
-                let interimText = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    if (event.results[i].isFinal) {
-                        finalText += transcript;
-                    } else {
-                        interimText += transcript;
-                    }
-                }
-                if (finalText) {
-                    const current = $('#input-ja').value;
-                    $('#input-ja').value = current + (current ? ' ' : '') + finalText;
-                    $('#char-count-ja').textContent = $('#input-ja').value.length;
-                    if (state.autoTranslate) {
-                        performTranslation();
-                    }
-                    toast('✅ Voice input captured!', 'success');
-                }
-            };
-
-            state.recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                if (event.error === 'not-allowed') {
-                    toast('❌ Microphone access denied. Please allow microphone access.', 'error');
-                } else if (event.error !== 'no-speech') {
-                    toast('❌ Voice input error: ' + event.error, 'error');
-                }
-                state.isRecording = false;
-                btn.classList.remove('recording');
-                btn.textContent = '🎤';
-            };
-
-            state.recognition.onend = () => {
-                state.isRecording = false;
-                btn.classList.remove('recording');
-                btn.textContent = '🎤';
-            };
-
-            try {
-                state.recognition.start();
-            } catch (e) {
-                toast('❌ Could not start voice input: ' + e.message, 'error');
-                state.isRecording = false;
-                btn.classList.remove('recording');
-                btn.textContent = '🎤';
-            }
-        }
-
-        function clearInput() {
-            $('#input-ja').value = '';
-            $('#char-count-ja').textContent = '0';
-            if (state.autoTranslate) {
-                performTranslation();
-            }
-        }
-
-        // ============================================================
-        //  TEXT-TO-SPEECH
-        // ============================================================
-        function speakText(lang) {
-            const text = lang === 'ne' ? $('#output-ne').value : $('#output-en').value;
-            if (!text.trim()) {
-                toast('Nothing to speak.', 'error');
-                return;
-            }
-
-            if (!('speechSynthesis' in window)) {
-                toast('Text-to-speech is not supported in this browser.', 'error');
-                return;
-            }
-
-            // Cancel any ongoing speech
-            window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = lang === 'ne' ? 'ne-NP' : 'en-US';
-            utterance.rate = 0.85;
-            utterance.pitch = 1;
-
-            // Try to find a better voice
-            const voices = window.speechSynthesis.getVoices();
-            if (lang === 'ne') {
-                const neVoice = voices.find(v => v.lang.startsWith('ne'));
-                if (neVoice) utterance.voice = neVoice;
-            } else {
-                const enVoice = voices.find(v => v.lang.startsWith('en-US') && v.name.includes('Google'));
-                if (enVoice) utterance.voice = enVoice;
-            }
-
-            utterance.onstart = () => toast('🔊 Speaking...', 'info');
-            utterance.onend = () => toast('✅ Done speaking.', 'success');
-            utterance.onerror = (e) => toast('❌ Speech error: ' + e.error, 'error');
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // Preload voices
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.getVoices();
-            window.speechSynthesis.onvoiceschanged = () => {
-                window.speechSynthesis.getVoices();
-            };
         }
 
         // ============================================================
@@ -1522,6 +1320,7 @@
             if (state.history.length > 100) state.history.pop();
             localStorage.setItem('mk_translation_history', JSON.stringify(state.history));
             renderHistory();
+            updateStats();
             $('#btn-save-history').style.display = 'none';
             toast('💾 Saved to history!', 'success');
         }
@@ -1534,19 +1333,21 @@
             }
             container.innerHTML = state.history.map((h, i) => `
                         <div class="history-item">
-                            <span class="h-jp">🇯🇵 ${h.ja.substring(0, 40)}${h.ja.length > 40 ? '...' : ''}</span>
-                            <span class="h-ne">🇳🇵 ${h.ne.substring(0, 40)}${h.ne.length > 40 ? '...' : ''}</span>
-                            <span class="h-en">🇬🇧 ${h.en.substring(0, 40)}${h.en.length > 40 ? '...' : ''}</span>
-                            <span class="h-time">${new Date(h.timestamp).toLocaleDateString()}</span>
-                            <button onclick="deleteHistoryItem(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;">✕</button>
+                            <span style="color:var(--text-secondary);max-width:22%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🇯🇵 ${h.ja.substring(0, 35)}${h.ja.length > 35 ? '...' : ''}</span>
+                            <span style="color:#a78bfa;max-width:22%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🇳🇵 ${h.ne.substring(0, 35)}${h.ne.length > 35 ? '...' : ''}</span>
+                            <span style="color:#93c5fd;max-width:22%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🇬🇧 ${h.en.substring(0, 35)}${h.en.length > 35 ? '...' : ''}</span>
+                            <span style="font-size:10px;color:var(--text-muted);white-space:nowrap;">${new Date(h.timestamp).toLocaleDateString()}</span>
+                            <button onclick="deleteHistoryItem(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:4px;">✕</button>
                         </div>
                     `).join('');
+            updateStats();
         }
 
         window.deleteHistoryItem = (i) => {
             state.history.splice(i, 1);
             localStorage.setItem('mk_translation_history', JSON.stringify(state.history));
             renderHistory();
+            updateStats();
             toast('🗑️ History item removed', 'info');
         };
 
@@ -1556,6 +1357,7 @@
                 state.history = [];
                 localStorage.setItem('mk_translation_history', JSON.stringify(state.history));
                 renderHistory();
+                updateStats();
                 toast('🗑️ History cleared', 'info');
             }
         };
@@ -1571,6 +1373,31 @@
         };
 
         // ============================================================
+        //  STATS
+        // ============================================================
+        function updateStats() {
+            const jaText = taJa.value;
+            const words = jaText.trim() ? jaText.trim().split(/[\s\n\r\t、。！？「」『』（）【】…—・]+/).filter(w => w.length > 0).length :
+            0;
+            $('#char-count-display').textContent = jaText.length;
+            $('#word-count-display').textContent = words;
+            $('#history-count-display').textContent = state.history.length;
+
+            // Update status
+            const status = $('#status-display');
+            if (jaText.length > 10000) {
+                status.textContent = '⚠️ Large text (10,000+)';
+                status.style.color = '#fbbf24';
+            } else if (jaText.length > 0) {
+                status.textContent = '✅ Ready to translate';
+                status.style.color = '#34d399';
+            } else {
+                status.textContent = 'Ready';
+                status.style.color = 'var(--text-muted)';
+            }
+        }
+
+        // ============================================================
         //  TEXT TAB
         // ============================================================
         const taJa = $('#input-ja');
@@ -1580,22 +1407,32 @@
         let translateTimeout = null;
 
         taJa.oninput = () => {
-            $('#char-count-ja').textContent = taJa.value.length;
-            if (state.autoTranslate) {
+            const len = taJa.value.length;
+            $('#char-count-ja').textContent = len;
+            updateStats();
+
+            // Show warning for large text
+            const countEl = $('#char-count-ja');
+            countEl.className = len > 10000 ? 'char-count warning' : 'char-count';
+            if (len > 20000) countEl.className = 'char-count danger';
+
+            if (state.autoTranslate && len > 0) {
                 clearTimeout(translateTimeout);
-                translateTimeout = setTimeout(performTranslation, 500);
+                translateTimeout = setTimeout(performTranslation, 600);
             }
             if (taNe.value.trim() && taEn.value.trim()) {
                 $('#btn-save-history').style.display = 'inline-flex';
             }
-            // Show word breakdown for Japanese input
-            showWordBreakdown(taJa.value);
         };
 
-        taNe.oninput = () => { $('#char-count-ne').textContent = taNe.value.length;
-            updatePdfOutBtns(); };
-        taEn.oninput = () => { $('#char-count-en').textContent = taEn.value.length;
-            updatePdfOutBtns(); };
+        taNe.oninput = () => {
+            $('#char-count-ne').textContent = taNe.value.length;
+            updatePdfOutBtns();
+        };
+        taEn.oninput = () => {
+            $('#char-count-en').textContent = taEn.value.length;
+            updatePdfOutBtns();
+        };
 
         async function performTranslation() {
             const t = taJa.value.trim();
@@ -1606,19 +1443,20 @@
                 $('#char-count-en').textContent = '0';
                 updatePdfOutBtns();
                 $('#btn-save-history').style.display = 'none';
-                $('#word-breakdown').classList.remove('visible');
                 return;
             }
 
             try {
-                const [ne, en] = await Promise.all([translateText(t, 'ne'), translateText(t, 'en')]);
+                const [ne, en] = await Promise.all([
+                    translateText(t, 'ne'),
+                    translateText(t, 'en')
+                ]);
                 taNe.value = ne;
                 taEn.value = en;
                 $('#char-count-ne').textContent = ne.length;
                 $('#char-count-en').textContent = en.length;
                 updatePdfOutBtns();
                 $('#btn-save-history').style.display = 'inline-flex';
-                showWordBreakdown(t);
             } catch (e) {
                 console.error('Translation error:', e);
             }
@@ -1627,14 +1465,20 @@
         $('#btn-translate').onclick = async () => {
             const t = taJa.value.trim();
             if (!t) { toast('Please enter Japanese text.', 'error'); return; }
+
             const btn = $('#btn-translate');
             btn.disabled = true;
             btn.innerHTML = '⏳ Translating...';
+
             try {
                 await performTranslation();
                 toast('✅ Translation complete!', 'success');
-            } catch (e) { toast('❌ ' + e.message, 'error'); } finally { btn.disabled = false;
-                btn.innerHTML = '🔄 Translate'; }
+            } catch (error) {
+                toast('❌ Translation failed: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Translate';
+            }
         };
 
         $('#btn-auto-translate').onclick = function() {
@@ -1652,16 +1496,17 @@
             saveToHistory(taJa.value, taNe.value, taEn.value);
         };
 
-        $('#btn-clear-text').onclick = () => { taJa.value = taNe.value = taEn.value = '';
+        $('#btn-clear-text').onclick = () => {
+            taJa.value = taNe.value = taEn.value = '';
             $('#char-count-ja').textContent = $('#char-count-ne').textContent = $('#char-count-en').textContent = '0';
             $('#btn-pdf-ne-out').style.display = 'none';
             $('#btn-pdf-en-out').style.display = 'none';
-            $('#btn-export-docx').style.display = 'none';
             $('#btn-save-history').style.display = 'none';
-            $('#word-breakdown').classList.remove('visible');
+            updateStats();
             if (state.autoTranslate) {
                 performTranslation();
-            } };
+            }
+        };
 
         $('#btn-copy-ne').onclick = () => copyText(taNe.value, 'Nepali copied!');
         $('#btn-copy-en').onclick = () => copyText(taEn.value, 'English copied!');
@@ -1669,13 +1514,15 @@
         function copyText(t, msg) {
             if (!t.trim()) { toast('Nothing to copy.', 'error'); return; }
             navigator.clipboard.writeText(t).then(() => toast('📋 ' + msg, 'success'))
-                .catch(() => { const e = document.createElement('textarea');
+                .catch(() => {
+                    const e = document.createElement('textarea');
                     e.value = t;
                     document.body.appendChild(e);
                     e.select();
                     document.execCommand('copy');
                     e.remove();
-                    toast('📋 ' + msg, 'success'); });
+                    toast('📋 ' + msg, 'success');
+                });
         }
 
         function updatePdfOutBtns() {
@@ -1683,88 +1530,7 @@
                 en = taEn.value.trim();
             $('#btn-pdf-ne-out').style.display = ne ? 'inline-flex' : 'none';
             $('#btn-pdf-en-out').style.display = en ? 'inline-flex' : 'none';
-            $('#btn-export-docx').style.display = (ne || en) ? 'inline-flex' : 'none';
-            state.lastNeText = ne;
-            state.lastEnText = en;
         }
-
-        // ============================================================
-        //  EXPORT DOCX
-        // ============================================================
-        $('#btn-export-docx').onclick = async () => {
-            const ne = taNe.value.trim();
-            const en = taEn.value.trim();
-            if (!ne && !en) { toast('Nothing to export.', 'error'); return; }
-
-            showLoading('Creating DOCX...', 'Generating document...');
-
-            try {
-                const PptxGenJS = window.PptxGenJS;
-                const doc = new PptxGenJS();
-                const slide = doc.addSlide();
-
-                // Add title
-                slide.addText('Translation by MUKESH KOIRALA', {
-                    x: 0.5,
-                    y: 0.5,
-                    w: 9,
-                    h: 0.8,
-                    fontSize: 24,
-                    color: '7C3AED',
-                    bold: true,
-                    align: 'center'
-                });
-
-                // Add Nepali
-                slide.addText('🇳🇵 नेपाली अनुवाद', {
-                    x: 0.5,
-                    y: 1.5,
-                    w: 9,
-                    h: 0.5,
-                    fontSize: 16,
-                    bold: true,
-                    color: '8B5CF6'
-                });
-                slide.addText(ne || 'No translation', {
-                    x: 0.5,
-                    y: 2.1,
-                    w: 9,
-                    h: 2.5,
-                    fontSize: 12,
-                    color: '000000',
-                    valign: 'top',
-                    fontFace: 'Noto Sans Devanagari'
-                });
-
-                // Add English
-                slide.addText('🇬🇧 English Translation', {
-                    x: 0.5,
-                    y: 4.8,
-                    w: 9,
-                    h: 0.5,
-                    fontSize: 16,
-                    bold: true,
-                    color: '3B82F6'
-                });
-                slide.addText(en || 'No translation', {
-                    x: 0.5,
-                    y: 5.4,
-                    w: 9,
-                    h: 2.5,
-                    fontSize: 12,
-                    color: '000000',
-                    valign: 'top'
-                });
-
-                const blob = await doc.write('blob');
-                saveAs(blob, `translation_${new Date().toISOString().slice(0,10)}.pptx`);
-                toast('📝 DOCX exported successfully!', 'success');
-            } catch (e) {
-                toast('❌ ' + e.message, 'error');
-            } finally {
-                hideLoading();
-            }
-        };
 
         // Text tab PDF exports
         $('#btn-pdf-ne-out').onclick = () => exportStyledPdf(taNe.value, 'नेपाली अनुवाद', 'Japanese → Nepali',
@@ -1782,13 +1548,13 @@
                 document.body.appendChild(cont);
                 cont.innerHTML =
                     `<div style="font-family:'Noto Sans Devanagari','Noto Sans',sans-serif;width:595px;padding:50px 45px;background:#fff;color:#1a1a1a;line-height:1.8;">
-                            <h1 style="font-size:24pt;font-weight:700;color:#7c3aed;text-align:center;margin-bottom:2pt;letter-spacing:-0.5px;">${title}</h1>
-                            <p style="text-align:center;color:#6b7280;font-size:10pt;margin-bottom:18pt;border-bottom:3px solid #8b5cf6;padding-bottom:12pt;">${subtitle} · MUKESH KOIRALA</p>
-                            <div style="font-size:11pt;text-align:justify;white-space:pre-wrap;word-break:break-word;">
-                                ${text.split('\n\n').map(p => `<p style="margin-bottom:10pt;text-indent:24pt;">${p.replace(/\n/g,'<br/>')}</p>`).join('')}
-                            </div>
-                            <p style="text-align:center;color:#9ca3af;font-size:8pt;margin-top:40pt;border-top:1px solid #e5e7eb;padding-top:10pt;">Generated by MUKESH KOIRALA · ${new Date().toLocaleDateString()}</p>
-                        </div>`;
+                        <h1 style="font-size:24pt;font-weight:700;color:#7c3aed;text-align:center;margin-bottom:2pt;">${title}</h1>
+                        <p style="text-align:center;color:#6b7280;font-size:10pt;margin-bottom:18pt;border-bottom:3px solid #8b5cf6;padding-bottom:12pt;">${subtitle} · MUKESH KOIRALA</p>
+                        <div style="font-size:11pt;text-align:justify;white-space:pre-wrap;word-break:break-word;">
+                            ${text.split('\n\n').map(p => `<p style="margin-bottom:10pt;text-indent:24pt;">${p.replace(/\n/g,'<br/>')}</p>`).join('')}
+                        </div>
+                        <p style="text-align:center;color:#9ca3af;font-size:8pt;margin-top:40pt;border-top:1px solid #e5e7eb;padding-top:10pt;">Generated by MUKESH KOIRALA · ${new Date().toLocaleDateString()}</p>
+                    </div>`;
 
                 await document.fonts.ready;
                 const canvas = await html2canvas(cont, { scale: 2, useCORS: true, backgroundColor: '#ffffff', width: 595,
@@ -1843,7 +1609,7 @@
             fileInp.value = ''; };
 
         function addFiles(files) {
-            const supported = ['xlsx', 'xls', 'csv', 'docx', 'pptx', 'pdf', 'txt', 'html', 'rtf'];
+            const supported = ['xlsx', 'xls', 'csv', 'docx', 'pptx', 'pdf', 'txt'];
             for (const f of files) {
                 const ext = f.name.split('.').pop().toLowerCase();
                 if (!supported.includes(ext)) { toast(`❌ Unsupported: .${ext}`, 'error'); continue; }
@@ -1861,8 +1627,7 @@
                 b / 1048576).toFixed(1) + ' MB'; }
 
         function iconFor(ext) {
-            const m = { xlsx: '📊', xls: '📊', csv: '📋', docx: '📝', pptx: '📽️', pdf: '📕', txt: '📄', html: '🌐',
-            rtf: '📄' };
+            const m = { xlsx: '📊', xls: '📊', csv: '📋', docx: '📝', pptx: '📽️', pdf: '📕', txt: '📄' };
             return m[ext] || '📄';
         }
 
@@ -1892,7 +1657,6 @@
             updateFileBadge();
             if (!state.uploadedFiles.length) {
                 $('#download-section').classList.remove('visible');
-                $('#pdf-preview-area').classList.remove('visible');
                 $('#progress-bar').classList.remove('visible');
                 $('#page-progress').classList.remove('visible');
             }
@@ -1908,13 +1672,12 @@
             updateFileActions();
             updateFileBadge();
             $('#download-section').classList.remove('visible');
-            $('#pdf-preview-area').classList.remove('visible');
             $('#progress-bar').classList.remove('visible');
             $('#page-progress').classList.remove('visible');
         };
 
         // ============================================================
-        //  CORE LAYOUT-PRESERVING ENGINE (Simplified for v4)
+        //  LAYOUT PRESERVING ENGINE (Simplified)
         // ============================================================
 
         function escapeHtml(t) {
@@ -1930,40 +1693,36 @@
         async function renderPdfPageAsImage(buffer, pageNum) {
             const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
             const page = await pdf.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 2.5 });
+            const viewport = page.getViewport({ scale: 2 });
             const canvas = document.createElement('canvas');
             canvas.width = viewport.width;
             canvas.height = viewport.height;
             const ctx = canvas.getContext('2d');
             await page.render({ canvasContext: ctx, viewport }).promise;
             return {
-                imageData: canvas.toDataURL('image/jpeg', 0.95),
+                imageData: canvas.toDataURL('image/jpeg', 0.92),
                 width: viewport.width,
                 height: viewport.height,
-                canvas,
-                viewport
             };
         }
 
         async function extractPdfTextItems(buffer, pageNum) {
             const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
             const page = await pdf.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 2.5 });
+            const viewport = page.getViewport({ scale: 2 });
             const content = await page.getTextContent();
 
             return content.items.map(item => {
                 const tx = item.transform;
                 const x = tx[4];
                 const y = viewport.height - tx[5];
-                const fontSize = Math.abs(tx[3]) * 1.2;
-                const w = (item.width || 0) * Math.abs(tx[0] || 1) * 1.2;
+                const fontSize = Math.abs(tx[3]);
                 return {
                     text: item.str,
                     x: x,
                     y: y - fontSize,
                     fontSize: fontSize,
-                    width: w,
-                    height: fontSize,
+                    width: item.width || 100,
                 };
             }).filter(t => t.text.trim().length > 0);
         }
@@ -1981,106 +1740,16 @@
         }
 
         // ============================================================
-        //  PPTX RENDERER
-        // ============================================================
-
-        async function renderPptxSlideAsImage(buffer, slideNum) {
-            const zip = await JSZip.loadAsync(buffer);
-            const slideFiles = Object.keys(zip.files)
-                .filter(n => n.match(/ppt\/slides\/slide\d+\.xml/))
-                .sort();
-            const slideFile = slideFiles[slideNum - 1];
-            if (!slideFile) throw new Error('Slide not found');
-
-            const xml = await zip.files[slideFile].async('text');
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xml, 'text/xml');
-
-            const texts = [];
-            const shapes = xmlDoc.querySelectorAll('p\\:sp, sp');
-
-            shapes.forEach(shape => {
-                const txBody = shape.querySelector('p\\:txBody, txBody');
-                if (!txBody) return;
-                const tEls = txBody.querySelectorAll('a\\:t, t');
-                const text = Array.from(tEls).map(el => el.textContent).join('');
-
-                const spPr = shape.querySelector('p\\:spPr, spPr');
-                let x = 0,
-                    y = 0,
-                    w = 100,
-                    h = 20;
-                if (spPr) {
-                    const xfrm = spPr.querySelector('a\\:xfrm, xfrm');
-                    if (xfrm) {
-                        const off = xfrm.querySelector('a\\:off, off');
-                        const ext = xfrm.querySelector('a\\:ext, ext');
-                        if (off) {
-                            x = parseFloat(off.getAttribute('x') || 0) / 914400 * 96;
-                            y = parseFloat(off.getAttribute('y') || 0) / 914400 * 96;
-                        }
-                        if (ext) {
-                            w = (parseFloat(ext.getAttribute('cx') || 914400) / 914400) * 96;
-                            h = (parseFloat(ext.getAttribute('cy') || 914400) / 914400) * 96;
-                        }
-                    }
-                }
-                texts.push({ text, x, y, width: w, height: h, fontSize: 16 });
-            });
-
-            const container = document.createElement('div');
-            container.style.cssText = 'position:absolute;left:-9999px;top:0;';
-            container.innerHTML = `
-                        <div style="position:relative;width:960px;height:540px;background:#fff;overflow:hidden;">
-                            ${texts.map(t => `<div style="position:absolute;left:${t.x}px;top:${t.y}px;width:${t.width}px;height:${t.height}px;font-size:16px;font-family:'Noto Sans',sans-serif;color:#1a1a1a;overflow:hidden;">${escapeHtml(t.text)}</div>`).join('')}
-                        </div>
-                    `;
-            document.body.appendChild(container);
-            const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff', width: 960,
-                height: 540 });
-            document.body.removeChild(container);
-
-            return {
-                imageData: canvas.toDataURL('image/jpeg', 0.95),
-                width: 960,
-                height: 540,
-                textItems: texts,
-            };
-        }
-
-        async function getPptxPageCount(buffer) {
-            const zip = await JSZip.loadAsync(buffer);
-            return Object.keys(zip.files).filter(n => n.match(/ppt\/slides\/slide\d+\.xml/)).length;
-        }
-
-        async function extractPptxTextItems(buffer, slideNum) {
-            const { textItems } = await renderPptxSlideAsImage(buffer, slideNum);
-            return textItems.map(t => ({
-                text: t.text,
-                x: t.x,
-                y: t.y,
-                fontSize: 16,
-                width: t.width,
-                height: t.height,
-            }));
-        }
-
-        // ============================================================
         //  DOCX RENDERER
         // ============================================================
 
         async function renderDocxPageAsImage(buffer, pageNum) {
-            const result = await mammoth.convertToHtml({ arrayBuffer: buffer }, {
-                styleMap: [
-                    "p[style-name] => p:fresh",
-                    "r[style-name] => r:fresh"
-                ]
-            });
+            const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
             const html = result.value;
             const container = document.createElement('div');
             container.style.cssText = 'position:absolute;left:-9999px;top:0;';
             container.innerHTML = `
-                        <div style="position:relative;width:595px;min-height:842px;background:#fff;padding:60px 50px;font-family:'Noto Sans Devanagari','Noto Sans',serif;font-size:12pt;line-height:1.7;color:#1a1a1a;">
+                        <div style="position:relative;width:595px;min-height:842px;background:#fff;padding:60px 50px;font-family:'Noto Sans',sans-serif;font-size:12pt;line-height:1.7;color:#1a1a1a;">
                             ${html}
                         </div>
                     `;
@@ -2097,7 +1766,6 @@
                     y: rect.top - containerRect.top,
                     fontSize: parseFloat(getComputedStyle(p).fontSize) || 14.67,
                     width: rect.width,
-                    height: rect.height,
                 });
             });
 
@@ -2111,7 +1779,7 @@
             document.body.removeChild(container);
 
             return {
-                imageData: canvas.toDataURL('image/jpeg', 0.95),
+                imageData: canvas.toDataURL('image/jpeg', 0.92),
                 width: 595,
                 height: canvas.height / 2,
                 textItems,
@@ -2133,16 +1801,15 @@
             const wb = XLSX.read(buffer, { type: 'array' });
             const sheetName = wb.SheetNames[sheetNum - 1] || wb.SheetNames[0];
             const ws = wb.Sheets[sheetName];
-            const html = XLSX.utils.sheet_to_html(ws, { id: 'sheet', editable: false });
+            const html = XLSX.utils.sheet_to_html(ws, { id: 'sheet' });
 
             const container = document.createElement('div');
             container.style.cssText = 'position:absolute;left:-9999px;top:0;';
             container.innerHTML = `
-                        <div style="position:relative;background:#fff;padding:24px;font-family:'Noto Sans',sans-serif;font-size:11pt;color:#000;">
+                        <div style="position:relative;background:#fff;padding:20px;font-family:'Noto Sans',sans-serif;font-size:10pt;color:#000;">
                             <style>
-                                table { border-collapse: collapse; width:100%; }
-                                td, th { border: 1px solid #d1d5db; padding: 6px 12px; white-space: nowrap; min-width: 50px; }
-                                th { background: #f3f4f6; font-weight: 600; }
+                                table { border-collapse: collapse; }
+                                td, th { border: 1px solid #ccc; padding: 4px 8px; }
                             </style>
                             ${html}
                         </div>
@@ -2159,9 +1826,8 @@
                     text: td.textContent,
                     x: r.left - cr.left,
                     y: r.top - cr.top,
-                    fontSize: 14,
+                    fontSize: 13.33,
                     width: r.width,
-                    height: r.height,
                 });
             });
 
@@ -2175,7 +1841,7 @@
             document.body.removeChild(container);
 
             return {
-                imageData: canvas.toDataURL('image/jpeg', 0.95),
+                imageData: canvas.toDataURL('image/jpeg', 0.92),
                 width: canvas.width / 2,
                 height: canvas.height / 2,
                 textItems,
@@ -2218,7 +1884,6 @@
                         y: y,
                         fontSize: 14.67,
                         width: 495,
-                        height: 20,
                     });
                 }
                 y += 24;
@@ -2234,7 +1899,7 @@
             document.body.removeChild(container);
 
             return {
-                imageData: canvas.toDataURL('image/jpeg', 0.95),
+                imageData: canvas.toDataURL('image/jpeg', 0.92),
                 width: 595,
                 height: canvas.height / 2,
                 textItems,
@@ -2262,14 +1927,11 @@
         }
 
         registerFormat('pdf', renderPdfPageAsImage, extractPdfTextItems, getPdfPageCount);
-        registerFormat('pptx', renderPptxSlideAsImage, extractPptxTextItems, getPptxPageCount);
         registerFormat('docx', renderDocxPageAsImage, extractDocxTextItems, getDocxPageCount);
         registerFormat('xlsx', renderXlsxSheetAsImage, extractXlsxTextItems, getXlsxPageCount);
         registerFormat('xls', renderXlsxSheetAsImage, extractXlsxTextItems, getXlsxPageCount);
         registerFormat('csv', renderXlsxSheetAsImage, extractXlsxTextItems, getXlsxPageCount);
         registerFormat('txt', renderTextAsImage, extractTextItems, getTextPageCount);
-        registerFormat('html', renderTextAsImage, extractTextItems, getTextPageCount);
-        registerFormat('rtf', renderTextAsImage, extractTextItems, getTextPageCount);
 
         // ============================================================
         //  MAIN TRANSLATE FUNCTION
@@ -2287,7 +1949,7 @@
             const totalPages = await countFn(buffer);
             fileObj.totalPages = totalPages;
 
-            showLoading('Processing document...', `Page 1 of ${totalPages} · Extracting & translating...`);
+            showLoading('Processing document...', `Page 1 of ${totalPages}`);
 
             let pageWidth = 595,
                 pageHeight = 842;
@@ -2296,10 +1958,7 @@
                     const size = await getPdfPageSize(buffer, 1);
                     pageWidth = size.width;
                     pageHeight = size.height;
-                } else if (ext === 'pptx') { pageWidth = 960;
-                    pageHeight = 540; } else if (ext === 'docx') { pageWidth = 595;
-                    pageHeight = 842; } else { pageWidth = 595;
-                    pageHeight = 842; }
+                }
             } catch (e) {}
 
             const { jsPDF } = window.jspdf;
@@ -2319,21 +1978,16 @@
             for (let i = 0; i < totalPages; i++) {
                 const pageNum = i + 1;
                 $('#progress-fill').style.width = `${((i + 0.33) / totalPages) * 100}%`;
-                $('#page-progress').textContent = `📄 Page ${pageNum} of ${totalPages} · Rendering original...`;
+                $('#page-progress').textContent = `📄 Page ${pageNum} of ${totalPages}`;
 
                 const original = await renderFn(buffer, pageNum);
-
-                $('#progress-fill').style.width = `${((i + 0.5) / totalPages) * 100}%`;
-                $('#page-progress').textContent = `📄 Page ${pageNum} of ${totalPages} · Translating...`;
-
                 const textItems = await extractFn(buffer, pageNum);
+
                 const jpTexts = textItems.map(t => t.text);
                 const [neTexts, enTexts] = await Promise.all([
                     translateBatch(jpTexts, 'ne'),
                     translateBatch(jpTexts, 'en'),
                 ]);
-
-                $('#page-progress').textContent = `📄 Page ${pageNum} of ${totalPages} · Building layout...`;
 
                 const nePage = await buildOverlayPage(original, textItems, neTexts, pageWidth, pageHeight);
                 const enPage = await buildOverlayPage(original, textItems, enTexts, pageWidth, pageHeight);
@@ -2346,7 +2000,7 @@
                 enDoc.addImage(enPage, 'JPEG', 0, 0, pageWidth, pageHeight);
 
                 $('#progress-fill').style.width = `${((i + 1) / totalPages) * 100}%`;
-                $('#page-progress').textContent = `✅ Page ${pageNum} of ${totalPages} done`;
+                $('#page-progress').textContent = `✅ Page ${pageNum} done`;
             }
 
             fileObj.neBlob = neDoc.output('blob');
@@ -2362,30 +2016,27 @@
                         ${textItems.map((item, idx) => {
                             const tt = translatedTexts[idx] || item.text;
                             if (!tt.trim()) return '';
-                            const fSize = Math.max(item.fontSize || 12, 4);
                             const scaleX = pageWidth / original.width;
                             const scaleY = pageHeight / original.height;
                             const x = item.x * scaleX;
                             const y = item.y * scaleY;
-                            const maxW = Math.max((item.width || 100) * scaleX, 20);
-                            const fs = fSize * Math.min(scaleX, scaleY);
+                            const fs = Math.max(item.fontSize * Math.min(scaleX, scaleY), 4);
+                            const maxW = Math.max(item.width * scaleX, 20);
                             return `<div style="
                                 position:absolute;
                                 left:${x}px;
                                 top:${y}px;
-                                font-size:${Math.max(fs, 4)}px;
+                                font-size:${fs}px;
                                 font-family:'Noto Sans Devanagari','Noto Sans',sans-serif;
                                 color:#000;
                                 white-space:nowrap;
-                                background:rgba(255,255,255,0.90);
-                                padding:0 3px;
+                                background:rgba(255,255,255,0.85);
+                                padding:0 2px;
                                 border-radius:2px;
                                 max-width:${maxW}px;
                                 overflow:hidden;
                                 text-overflow:ellipsis;
-                                line-height:1.2;
                                 z-index:2;
-                                font-weight:500;
                             ">${escapeHtml(tt)}</div>`;
                         }).join('')}
                     `;
@@ -2403,7 +2054,7 @@
             });
 
             document.body.removeChild(container);
-            return canvas.toDataURL('image/jpeg', 0.95);
+            return canvas.toDataURL('image/jpeg', 0.92);
         }
 
         // ============================================================
@@ -2461,29 +2112,28 @@
                         `).join('');
 
             hideLoading();
-            toast('✅ All files processed! Download your translations below.', 'success');
+            toast('✅ All files processed!', 'success');
         };
 
         window.downloadFile = (idx, lang) => {
             const f = state.uploadedFiles[idx];
             if (!f) return;
             const blob = lang === 'ne' ? f.neBlob : f.enBlob;
-            if (!blob) { toast('No translation available for this file.', 'error'); return; }
+            if (!blob) { toast('No translation available.', 'error'); return; }
             const base = f.name.replace(/\.[^.]+$/, '');
             const ext = lang === 'ne' ? '_Nepali.pdf' : '_English.pdf';
             saveAs(blob, base + ext);
         };
 
         // ============================================================
-        //  INIT HISTORY
+        //  INIT
         // ============================================================
         renderHistory();
+        updateStats();
 
-        console.log('🚀 MUKESH KOIRALA · Ultimate Translator v4.0 Ready');
+        console.log('🚀 MUKESH KOIRALA · Ultimate Translator v5.0 Ready');
         console.log(`📜 ${state.history.length} translations in history`);
-        console.log('🎤 Voice input: Click the microphone button in the Japanese text area');
-        console.log('🔊 Text-to-speech: Click "Listen" buttons next to Nepali/English labels');
-        console.log('⚡ Auto-translate: Click the "Auto" button for real-time translation');
+        console.log('📝 10,000+ character support enabled');
     </script>
 </body>
 </html>
